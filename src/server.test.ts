@@ -1,7 +1,8 @@
 import supertest from "supertest";
 import app from "./server";
-import { MYSTERIOUS_ROBED_FIGURE } from "./constants/characters";
-import { CAVE_EXTERIOR } from "./constants/locations";
+import { MYSTERIOUS_ROBED_FIGURE, ADVENTURE_ADMIN } from "./constants/characters";
+import { CAVE_EXTERIOR, HANDFORTH_PARISH_COUNCIL } from "./constants/locations";
+
 
 test("GET / responds with a welcome message from our mysterious robed figure", async () => {
   const response = await supertest(app).get("/");
@@ -56,14 +57,14 @@ test("GET /quest/decline responds with an apocalyptic message", async () => {
   expect(response.body.options).toStrictEqual({ restart: "/" });
 });
 
-test.skip("GET /quest/start/impossible responds with instant 'death'", async () => {
+test("GET /quest/start/impossible responds with angry dragon fireball", async () => {
   const response = await supertest(app).get("/quest/start/impossible");
 
   // there is _some_ location
-  expect(response.body.location).toBeDefined();
+  expect(response.body.location).toBe("Academy Headquaters");
 
   // there is _some_ speaker
-  expect(response.body.speech.speaker.name).toBeDefined();
+  expect(response.body.speech.speaker.name).toBe("Richard the holder of knowledge");
 
   // fiery death
   expect(response.body.speech.text).toMatch(/fireball/i);
@@ -72,4 +73,18 @@ test.skip("GET /quest/start/impossible responds with instant 'death'", async () 
 
   // includes option to restart
   expect(response.body.options).toMatchObject({ restart: "/" });
+});
+
+test("GET /help responds with support", async () => {
+  const response = await supertest(app).get("/help");
+
+  expect(response.body).toMatchObject({
+    location: HANDFORTH_PARISH_COUNCIL,
+    speech: {
+      speaker: ADVENTURE_ADMIN,
+    },
+  });
+  expect(typeof response.body.speech.text).toBe("string");
+
+  expect(response.body.options).toStrictEqual({ backToStart: "/" });
 });

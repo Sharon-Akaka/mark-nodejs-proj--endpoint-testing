@@ -53,6 +53,22 @@ app.get("/quest/accept", (req, res) => {
   });
 });
 
+app.get("/quest/start/impossible", (req, res) => {
+    res.json({
+      location: "Academy Headquaters",
+      speech: {
+        speaker: {
+          name: "Richard the holder of knowledge",
+          description: "King of Huel and Code",
+        },
+        text: "The Dragon shoots a fireball out of its mouth which causes you excruciating pain",
+          },
+      options: {
+        restart: "/",
+      },
+    });
+  });
+
 app.get("/quest/decline", (req, res) => {
   res.json({
     location: "Apocalypse",
